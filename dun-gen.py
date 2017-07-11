@@ -18,7 +18,16 @@ class Dungeon:
         return '<Dungeon object: %dx%d grid, %d rooms>'%(max([len(row) for row in self.grid]), len(self.grid), self.n_rooms)
     def render(self): # After running generation algorithm, call this to update self.grid
         all_floor_tiles = [(local_coord[0]+room.origin[0], local_coord[1]+room.origin[1]) for room in self.rooms for local_coord in room.floor]
-        print all_floor_tiles # this is just for debug
+        all_door_tiles = [(door.pos[0]+room.origin[0], door.pos[1]+room.origin[1]) for room in self.rooms for door in room.exits]
+        #print all_floor_tiles # this is just for debug
+        for y in range(len(self.grid)):
+            for x in range(len(self.grid[y])):
+                if (x,y) in all_floor_tiles:
+                    self.grid[y][x] = '.'
+                elif (x,y) in all_door_tiles:
+                    self.grid[y][x] = '+'
+                else:
+                    self.grid[y][x] = '#'
         
     def generate(self): # run DMG algorithm
         self.rooms.append(Room_1(self.center))
@@ -28,6 +37,7 @@ class Dungeon:
             for exit in room.exits:
                 # generate new room
                 pass
+        self.render()
 
 class Door():
     '''Generic connection between two rooms'''
