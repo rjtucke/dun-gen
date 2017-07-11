@@ -10,6 +10,7 @@ class Dungeon:
     def __init__(self):
         self.rooms = [] # logical structures
         self.grid = [['#' for x in range(Dungeon.DEFAULT_SIZE)] for y in range(Dungeon.DEFAULT_SIZE)] # map itself
+        self.generate()
     def __str__(self):
         return '\n'.join([''.join(self.grid[y]) for y in range(len(self.grid))])
     def render(self): # After running generation algorithm, call this to update self.grid
@@ -17,6 +18,12 @@ class Dungeon:
         print all_floor_tiles
     def generate(self): # run DMG algorithm
         self.rooms.append(Room_1((0,0)))
+
+class Door():
+    '''Generic connection between two rooms'''
+    def __init__(self, pos):
+        self.pos = pos
+        self.dst = None
 
 class Room_1(): # 20x20 ft; passage on each wall
     '''Knows its room number (may be zero), 
@@ -27,7 +34,7 @@ class Room_1(): # 20x20 ft; passage on each wall
     def __init__(self, origin):
         self.origin = origin
         self.floor = set((x,y) for x in range(4) for y in range(4))
-        self.exits = set((-1,1),(4,1),(1,4),(4,-1)) # this is probably wrong
+        self.exits = set([Door((-1,1)), Door((4,1)), Door((1,4)), Door((4,-1))])
         Dungeon.n_rooms += 1
 
 if __name__=='__main__':
